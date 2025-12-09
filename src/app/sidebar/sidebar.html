@@ -1,0 +1,8 @@
+<nav class="sidebar" [class.open]="layoutService.sidebarOpen()">
+    <ul>
+        <li><a routerLink="/dashboard" routerLinkActive="active" (click)="closeSidebar()">Projects</a></li>
+        <li><a routerLink="/assets" routerLinkActive="active" (click)="closeSidebar()">Assets</a></li>
+        <li><a routerLink="/settings" routerLinkActive="active" (click)="closeSidebar()">Settings</a></li>
+    </ul>
+</nav>
+<div class="overlay" *ngIf="layoutService.sidebarOpen()" (click)="closeSidebar()"></div>

@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1765217383257,
+  "timestamp": 1765239489589,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -12,9 +12,9 @@
       },
       "urls": [
         "/index.html",
-        "/main-KXYKKI65.js",
+        "/main-XVCBY47R.js",
         "/manifest.webmanifest",
-        "/styles-5INURTSO.css"
+        "/styles-YATH62OO.css"
       ],
       "patterns": []
     },
@@ -34,10 +34,10 @@
   "dataGroups": [],
   "hashTable": {
     "/icons/imagix-logo.png": "85d42534f7f0ee0609d3804250db867a809f259e",
-    "/index.html": "6dc08e35804a944b4253fd497e5a1f59f472f637",
-    "/main-KXYKKI65.js": "717b9b63a35e460ec0edb70d25e404d05241f9ac",
+    "/index.html": "14781925f060f5e685d397ea24567466811f23c7",
+    "/main-XVCBY47R.js": "263387fb1cbf52807be320dd3fa20e986d7727f9",
     "/manifest.webmanifest": "f5d121adfd39ef17a2d7d9cbe260f8115b6c58b4",
-    "/styles-5INURTSO.css": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    "/styles-YATH62OO.css": "c4b9ffc49e3f1ca5b78cbba05b50361ce32b8801"
   },
   "navigationUrls": [
     {
