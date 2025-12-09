@@ -18,7 +18,7 @@
             <div class="project-meta">
                 <span class="date">Created: {{ project.createdAt | date:'short' }}</span>
             </div>
-            <button class="open-btn">Open Project</button>
+            <button class="open-btn" [routerLink]="['/projects', project.id]">Open Project</button>
         </div>
     </div>
 

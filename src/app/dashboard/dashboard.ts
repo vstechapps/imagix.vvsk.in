@@ -1,14 +1,15 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { ProjectService, Project } from '../services/project.service';
 import { EventService } from '../services/event.service';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, FormsModule],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -34,14 +35,12 @@ export class Dashboard implements OnInit {
   }
 
   loadProjects() {
-    this.projectService.getUserProjects().subscribe({
-      next: (projects) => {
+    this.projectService.getUserProjects().subscribe((projects: Project[]) => {
         this.projects.set(projects);
       },
-      error: (error) => {
+      (error) => {
         console.error('Error loading projects:', error);
-      }
-    });
+      });
   }
 
   openCreateDialog() {

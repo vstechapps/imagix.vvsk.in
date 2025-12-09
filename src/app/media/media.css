@@ -1,0 +1,180 @@
+/* Media Library Styles */
+.media-library {
+  margin-top: 24px;
+}
+
+.media-library h2 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.media-card {
+  background: #0f172a;
+  border: 1px solid #1f2937;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.media-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+}
+
+.media-card-header:hover {
+  background: #1a2332;
+}
+
+.media-card-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+
+.media-icon {
+  font-size: 18px;
+}
+
+.media-count {
+  color: #9ca3af;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.toggle-icon {
+  color: #9ca3af;
+  font-size: 12px;
+  transition: transform 0.2s;
+}
+
+.media-card-content {
+  padding: 16px;
+  border-top: 1px solid #1f2937;
+}
+
+.btn-select {
+  width: 100%;
+  padding: 10px;
+  background: #1f2937;
+  border: 1px dashed #374151;
+  border-radius: 8px;
+  color: #e5e7eb;
+  cursor: pointer;
+  font-weight: 500;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+
+.btn-select:hover {
+  background: #374151;
+  border-color: #4b5563;
+}
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.media-item {
+  position: relative;
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 8px;
+  overflow: hidden;
+  padding: 8px;
+}
+
+.media-item img,
+.media-item video {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+}
+
+.media-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.media-name {
+  color: #e5e7eb;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.media-format {
+  color: #9ca3af;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+.btn-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.btn-remove:hover {
+  background: rgba(239, 68, 68, 0.9);
+}
+
+.media-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.audio-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+}
+
+.audio-item audio {
+  flex: 1;
+}
+
+.audio-item .media-info {
+  margin: 0;
+  min-width: 150px;
+}
+
+.audio-item .btn-remove {
+  position: static;
+  flex-shrink: 0;
+}
+
+@media (max-width: 960px) {
+  .media-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
+

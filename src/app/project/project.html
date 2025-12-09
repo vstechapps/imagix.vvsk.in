@@ -1,0 +1,36 @@
+<div class="project-container">
+  <header class="project-header">
+    <div>
+      <p class="eyebrow">Project</p>
+      <h1 *ngIf="!isLoading()">{{ project()?.name || 'Loading...' }}</h1>
+      <h1 *ngIf="isLoading()">Loading...</h1>
+    </div>
+    <div class="actions">
+      <button class="btn secondary">Export</button>
+      <button class="btn primary">Render</button>
+    </div>
+  </header>
+
+  <section class="editor">
+    <div class="canvas-shell">
+      <canvas #canvas></canvas>
+    </div>
+    <div class="panel">
+      <h3>Timeline (demo)</h3>
+      <p>Add layers, audio, and clips here. Etro is rendering on the canvas.</p>
+      <ul>
+        <li>Background layer (solid)</li>
+        <li>Title text with project id</li>
+        <li>Animated bar layer</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Media Library Component -->
+  <app-media 
+    [projectId]="projectId"
+    [initialMedia]="projectMedia()"
+    (mediaChange)="onMediaChange($event)"
+  ></app-media>
+</div>
+

@@ -1,24 +1,35 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, addDoc, deleteDoc, doc, query, where, getDocs, CollectionReference, DocumentData } from '@angular/fire/firestore';
+import { orderBy, where } from '@angular/fire/firestore';
 import { AuthService } from './auth.service';
-import { Observable } from 'rxjs';
-import { collectionData } from '@angular/fire/firestore';
+import { Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { FirestoreService } from './firestore.service';
+
+export interface Media {
+    file?: File; // Only available in browser, not stored in Firestore
+    path: string; // Blob URL or storage URL
+    type: 'image' | 'video' | 'audio';
+    format: string;
+    name?: string; // File name
+    size?: number; // File size in bytes
+}
 
 export interface Project {
     id?: string;
     name: string;
     userId: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
+    media?: Media[];
 }
 
 @Injectable({
     providedIn: 'root'
 })
 export class ProjectService {
-    private firestore = inject(Firestore);
+    private firestoreService = inject(FirestoreService);
     private authService = inject(AuthService);
-    private projectsCollection = collection(this.firestore, 'projects') as CollectionReference<DocumentData>;
+    private readonly PROJECTS_COLLECTION = 'projects';
 
     async createProject(name: string): Promise<void> {
         const user = await this.getCurrentUser();
@@ -27,31 +38,38 @@ export class ProjectService {
         const project: Omit<Project, 'id'> = {
             name,
             userId: user.uid,
-            createdAt: new Date(),
-            updatedAt: new Date()
+            createdAt: new Date().toDateString(),
+            updatedAt: new Date().toDateString()
         };
 
-        await addDoc(this.projectsCollection, project);
+        await this.firestoreService.create<Project>(this.PROJECTS_COLLECTION, project);
     }
 
     async deleteProject(projectId: string): Promise<void> {
-        const projectDoc = doc(this.firestore, 'projects', projectId);
-        await deleteDoc(projectDoc);
+        await this.firestoreService.delete(this.PROJECTS_COLLECTION, projectId);
+    }
+
+    async getProjectById(projectId: string): Promise<Project | null> {
+        return await this.firestoreService.getById<Project>(this.PROJECTS_COLLECTION, projectId);
     }
 
     getUserProjects(): Observable<Project[]> {
-        return new Observable((observer) => {
-            this.authService.user$.subscribe(user => {
-                if (user) {
-                    collectionData(this.projectsCollection, { idField: 'id' }).subscribe(
-                        (projects) => observer.next(projects as Project[]),
-                        (error) => observer.error(error)
-                    );
-                } else {
-                    observer.next([]);
+        return this.authService.user$.pipe(
+            switchMap(user => {
+                if (!user) {
+                    return of([]);
                 }
-            });
-        });
+                // Use the abstraction layer for real-time query
+                return this.firestoreService.query<Project>(
+                    this.PROJECTS_COLLECTION,
+                    where('userId', '==', user.uid)
+                );
+            })
+        );
+    }
+
+    async updateProject(projectId: string, updates: Partial<Project>): Promise<void> {
+        await this.firestoreService.update<Project>(this.PROJECTS_COLLECTION, projectId, updates);
     }
 
     private async getCurrentUser() {

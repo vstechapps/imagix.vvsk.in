@@ -1,20 +1,21 @@
 import { Injectable, inject } from '@angular/core';
-import { Auth, GoogleAuthProvider, signInWithPopup, signOut, user, User } from '@angular/fire/auth';
+import { GoogleAuthProvider, signInWithPopup, signOut, user, User } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
+import { FirestoreService } from './firestore.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthService {
-    private auth: Auth = inject(Auth);
-    user$: Observable<User | null> = user(this.auth);
+    private firestoreService = inject(FirestoreService);
+    user$: Observable<User | null> = user(this.firestoreService.auth);
 
     constructor() { }
 
     async login() {
         const provider = new GoogleAuthProvider();
         try {
-            await signInWithPopup(this.auth, provider);
+            await signInWithPopup(this.firestoreService.auth, provider);
         } catch (error) {
             console.error('Login failed', error);
             throw error;
@@ -23,7 +24,7 @@ export class AuthService {
 
     async logout() {
         try {
-            await signOut(this.auth);
+            await signOut(this.firestoreService.auth);
         } catch (error) {
             console.error('Logout failed', error);
             throw error;

@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1765239489589,
+  "timestamp": 1765312022428,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -11,8 +11,10 @@
         "ignoreVary": true
       },
       "urls": [
+        "/chunk-IMPBB4AK.js",
+        "/chunk-V6IRMN6Y.js",
         "/index.html",
-        "/main-XVCBY47R.js",
+        "/main-PAT4PVQO.js",
         "/manifest.webmanifest",
         "/styles-YATH62OO.css"
       ],
@@ -33,9 +35,11 @@
   ],
   "dataGroups": [],
   "hashTable": {
+    "/chunk-IMPBB4AK.js": "b808d1bcf32ded8ed458df18979c861687d0ccb3",
+    "/chunk-V6IRMN6Y.js": "1d0f553c48e8b6363c5da1caf1695e795cb94c58",
     "/icons/imagix-logo.png": "85d42534f7f0ee0609d3804250db867a809f259e",
-    "/index.html": "14781925f060f5e685d397ea24567466811f23c7",
-    "/main-XVCBY47R.js": "263387fb1cbf52807be320dd3fa20e986d7727f9",
+    "/index.html": "b55c59aa07b8c9496be9659f30d024a42dd8b523",
+    "/main-PAT4PVQO.js": "1481df46411177993badd243e282bd8652659bc2",
     "/manifest.webmanifest": "f5d121adfd39ef17a2d7d9cbe260f8115b6c58b4",
     "/styles-YATH62OO.css": "c4b9ffc49e3f1ca5b78cbba05b50361ce32b8801"
   },

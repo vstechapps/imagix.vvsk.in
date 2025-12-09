@@ -1,0 +1,109 @@
+<section class="media-library">
+  <h2>Media Library</h2>
+  
+  <!-- Images Card -->
+  <div class="media-card">
+    <div class="media-card-header" (click)="toggleImages()">
+      <div class="media-card-title">
+        <span class="media-icon">🖼️</span>
+        <span>Images</span>
+        <span class="media-count">({{ images().length }})</span>
+      </div>
+      <span class="toggle-icon">{{ isImagesExpanded() ? '▼' : '▶' }}</span>
+    </div>
+    <div class="media-card-content" *ngIf="isImagesExpanded()">
+      <input 
+        type="file" 
+        #imageInput
+        accept="image/*" 
+        multiple 
+        (change)="onMediaSelected($event, 'image')"
+        style="display: none"
+      />
+      <button class="btn-select" (click)="imageInput.click()">
+        Select Images
+      </button>
+      <div class="media-grid" *ngIf="images().length > 0">
+        <div class="media-item" *ngFor="let img of images()">
+          <img [src]="img.path" [alt]="img.file?.name || img.name || 'Image'" />
+          <div class="media-info">
+            <span class="media-name">{{ img.file?.name || img.name || 'Unknown' }}</span>
+            <span class="media-format">{{ img.format }}</span>
+          </div>
+          <button class="btn-remove" (click)="removeMedia(img)">×</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Videos Card -->
+  <div class="media-card">
+    <div class="media-card-header" (click)="toggleVideos()">
+      <div class="media-card-title">
+        <span class="media-icon">🎬</span>
+        <span>Videos</span>
+        <span class="media-count">({{ videos().length }})</span>
+      </div>
+      <span class="toggle-icon">{{ isVideosExpanded() ? '▼' : '▶' }}</span>
+    </div>
+    <div class="media-card-content" *ngIf="isVideosExpanded()">
+      <input 
+        type="file" 
+        #videoInput
+        accept="video/*" 
+        multiple 
+        (change)="onMediaSelected($event, 'video')"
+        style="display: none"
+      />
+      <button class="btn-select" (click)="videoInput.click()">
+        Select Videos
+      </button>
+      <div class="media-grid" *ngIf="videos().length > 0">
+        <div class="media-item" *ngFor="let video of videos()">
+          <video [src]="video.path" controls></video>
+          <div class="media-info">
+            <span class="media-name">{{ video.file?.name || video.name || 'Unknown' }}</span>
+            <span class="media-format">{{ video.format }}</span>
+          </div>
+          <button class="btn-remove" (click)="removeMedia(video)">×</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Card -->
+  <div class="media-card">
+    <div class="media-card-header" (click)="toggleAudio()">
+      <div class="media-card-title">
+        <span class="media-icon">🎵</span>
+        <span>Audio</span>
+        <span class="media-count">({{ audio().length }})</span>
+      </div>
+      <span class="toggle-icon">{{ isAudioExpanded() ? '▼' : '▶' }}</span>
+    </div>
+    <div class="media-card-content" *ngIf="isAudioExpanded()">
+      <input 
+        type="file" 
+        #audioInput
+        accept="audio/*" 
+        multiple 
+        (change)="onMediaSelected($event, 'audio')"
+        style="display: none"
+      />
+      <button class="btn-select" (click)="audioInput.click()">
+        Select Audio
+      </button>
+      <div class="media-list" *ngIf="audio().length > 0">
+        <div class="media-item audio-item" *ngFor="let audioFile of audio()">
+          <audio [src]="audioFile.path" controls></audio>
+          <div class="media-info">
+            <span class="media-name">{{ audioFile.file?.name || audioFile.name || 'Unknown' }}</span>
+            <span class="media-format">{{ audioFile.format }}</span>
+          </div>
+          <button class="btn-remove" (click)="removeMedia(audioFile)">×</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
