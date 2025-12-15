@@ -1,7 +1,8 @@
 import { Component, Input, Output, EventEmitter, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Media, ProjectService } from '../services/project.service';
+import { ProjectService } from '../services/project.service';
 import { ActivatedRoute } from '@angular/router';
+import { Media } from '../app.models';
 
 @Component({
   selector: 'app-media',

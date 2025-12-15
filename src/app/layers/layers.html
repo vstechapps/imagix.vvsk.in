@@ -40,8 +40,9 @@
         <div class="form-group">
             <label>Type</label>
             <select [ngModel]="newLayerType()" (ngModelChange)="newLayerType.set($event)">
-                <option value="Visual">Visual</option>
+                <option value="Visual">Visual (Shape)</option>
                 <option value="Text">Text</option>
+                <option value="Image">Image</option>
                 <option value="Audio">Audio</option>
                 <option value="Video">Video</option>
             </select>
@@ -55,38 +56,38 @@
 </div>
 
 <!-- Edit Layer Dialog -->
-<div class="dialog-overlay" *ngIf="showEditLayerDialog() && selectedLayer()" (click)="closeEditLayerDialog()">
+<div class="dialog-overlay" *ngIf="showEditLayerDialog() && editingLayer" (click)="closeEditLayerDialog()">
     <div class="dialog" (click)="$event.stopPropagation()">
         <h3>Edit Layer</h3>
 
         <div class="form-group">
             <label>Name</label>
-            <input type="text" [(ngModel)]="selectedLayer()!.name" placeholder="Layer Name">
+            <input type="text" [(ngModel)]="editingLayer.name" placeholder="Layer Name">
         </div>
 
         <!-- Dynamic properties based on type -->
-        <ng-container [ngSwitch]="selectedLayer()!.type">
+        <ng-container [ngSwitch]="editingLayer.type">
 
             <!-- Common props -->
             <div class="form-row">
                 <div class="form-group half">
                     <label>Start Time (s)</label>
-                    <input type="number" [(ngModel)]="selectedLayer()!.startTime" step="0.1" min="0">
+                    <input type="number" [(ngModel)]="editingLayer.startTime" step="0.1" min="0">
                 </div>
                 <div class="form-group half">
                     <label>Duration (s)</label>
-                    <input type="number" [(ngModel)]="selectedLayer()!.duration" step="0.1" min="0.1">
+                    <input type="number" [(ngModel)]="editingLayer.duration" step="0.1" min="0.1">
                 </div>
             </div>
 
-            <div class="form-row" *ngIf="selectedLayer()!.type !== 'Audio'">
+            <div class="form-row" *ngIf="editingLayer.type !== 'Audio'">
                 <div class="form-group half">
                     <label>X</label>
-                    <input type="number" [(ngModel)]="selectedLayer()!.x">
+                    <input type="number" [(ngModel)]="editingLayer.x">
                 </div>
                 <div class="form-group half">
                     <label>Y</label>
-                    <input type="number" [(ngModel)]="selectedLayer()!.y">
+                    <input type="number" [(ngModel)]="editingLayer.y">
                 </div>
             </div>
 
@@ -94,15 +95,39 @@
             <ng-container *ngSwitchCase="'Text'">
                 <div class="form-group">
                     <label>Text Content</label>
-                    <input type="text" [(ngModel)]="selectedLayer()!.text">
+                    <input type="text" [(ngModel)]="editingLayer.text">
                 </div>
                 <div class="form-group">
                     <label>Font</label>
-                    <input type="text" [(ngModel)]="selectedLayer()!.font" placeholder="e.g 24px Arial">
+                    <input type="text" [(ngModel)]="editingLayer.font" placeholder="e.g 24px Arial">
                 </div>
                 <div class="form-group">
                     <label>Color</label>
-                    <input type="color" [(ngModel)]="selectedLayer()!.color">
+                    <input type="color" [(ngModel)]="editingLayer.color">
+                </div>
+                <div class="form-group">
+                    <label>Opacity</label>
+                    <input type="number" [(ngModel)]="editingLayer.opacity" step="0.1" min="0" max="1">
+                </div>
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Text Alloc X</label>
+                        <input type="number" [(ngModel)]="editingLayer.textX">
+                    </div>
+                    <div class="form-group half">
+                        <label>Text Alloc Y</label>
+                        <input type="number" [(ngModel)]="editingLayer.textY">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Text Align</label>
+                    <select [(ngModel)]="editingLayer.textAlign">
+                        <option value="left">Left</option>
+                        <option value="center">Center</option>
+                        <option value="right">Right</option>
+                        <option value="start">Start</option>
+                        <option value="end">End</option>
+                    </select>
                 </div>
             </ng-container>
 
@@ -111,34 +136,93 @@
                 <div class="form-row">
                     <div class="form-group half">
                         <label>Width</label>
-                        <input type="number" [(ngModel)]="selectedLayer()!.width">
+                        <input type="number" [(ngModel)]="editingLayer.width">
                     </div>
                     <div class="form-group half">
                         <label>Height</label>
-                        <input type="number" [(ngModel)]="selectedLayer()!.height">
+                        <input type="number" [(ngModel)]="editingLayer.height">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Color (if solid)</label>
-                    <input type="color" [(ngModel)]="selectedLayer()!.color">
+                    <label>Background Color</label>
+                    <input type="color" [(ngModel)]="editingLayer.background">
+                </div>
+                <div class="form-group">
+                    <label>Opacity</label>
+                    <input type="number" [(ngModel)]="editingLayer.opacity" step="0.1" min="0" max="1">
+                </div>
+                <!-- Check if border object exists before trying to bind -->
+                <div class="form-group" *ngIf="editingLayer.border">
+                    <label>Border Color</label>
+                    <input type="color" [(ngModel)]="editingLayer.border.color">
+                </div>
+                <div class="form-group" *ngIf="editingLayer.border">
+                    <label>Border Thickness</label>
+                    <input type="number" [(ngModel)]="editingLayer.border.thickness">
+                </div>
+            </ng-container>
+
+            <!-- Image Specific -->
+            <ng-container *ngSwitchCase="'Image'">
+                <div class="form-group">
+                    <label>Source URL</label>
+                    <input type="text" [(ngModel)]="editingLayer.source">
+                </div>
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Dest Width</label>
+                        <input type="number" [(ngModel)]="editingLayer.destWidth">
+                    </div>
+                    <div class="form-group half">
+                        <label>Dest Height</label>
+                        <input type="number" [(ngModel)]="editingLayer.destHeight">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Dest X</label>
+                        <input type="number" [(ngModel)]="editingLayer.destX">
+                    </div>
+                    <div class="form-group half">
+                        <label>Dest Y</label>
+                        <input type="number" [(ngModel)]="editingLayer.destY">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Opacity</label>
+                    <input type="number" [(ngModel)]="editingLayer.opacity" step="0.1" min="0" max="1">
                 </div>
             </ng-container>
 
             <!-- Video Specific -->
             <ng-container *ngSwitchCase="'Video'">
+                <div class="form-group">
+                    <label>Source URL</label>
+                    <input type="text" [(ngModel)]="editingLayer.source">
+                </div>
                 <div class="form-row">
                     <div class="form-group half">
-                        <label>Width</label>
-                        <input type="number" [(ngModel)]="selectedLayer()!.width">
+                        <label>Dest Width</label>
+                        <input type="number" [(ngModel)]="editingLayer.destWidth">
                     </div>
                     <div class="form-group half">
-                        <label>Height</label>
-                        <input type="number" [(ngModel)]="selectedLayer()!.height">
+                        <label>Dest Height</label>
+                        <input type="number" [(ngModel)]="editingLayer.destHeight">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Source URL</label>
-                    <input type="text" [(ngModel)]="selectedLayer()!.source">
+                    <label>Opacity</label>
+                    <input type="number" [(ngModel)]="editingLayer.opacity" step="0.1" min="0" max="1">
+                </div>
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Volume</label>
+                        <input type="number" [(ngModel)]="editingLayer.volume" step="0.1" min="0" max="1">
+                    </div>
+                    <div class="form-group half">
+                        <label>Muted</label>
+                        <input type="checkbox" [(ngModel)]="editingLayer.muted">
+                    </div>
                 </div>
             </ng-container>
 
@@ -146,7 +230,21 @@
             <ng-container *ngSwitchCase="'Audio'">
                 <div class="form-group">
                     <label>Source URL</label>
-                    <input type="text" [(ngModel)]="selectedLayer()!.source">
+                    <input type="text" [(ngModel)]="editingLayer.source">
+                </div>
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Volume</label>
+                        <input type="number" [(ngModel)]="editingLayer.volume" step="0.1" min="0" max="1">
+                    </div>
+                    <div class="form-group half">
+                        <label>Muted</label>
+                        <input type="checkbox" [(ngModel)]="editingLayer.muted">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Playback Rate</label>
+                    <input type="number" [(ngModel)]="editingLayer.playbackRate" step="0.1">
                 </div>
             </ng-container>
 

@@ -1,19 +1,18 @@
 import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProjectService, Project as ProjectData, Media } from '../services/project.service';
-import { MediaComponent } from '../media/media';
-import { PreviewComponent } from '../preview/preview';
-import { TimelineComponent } from '../timeline/timeline';
+import { FormsModule } from '@angular/forms';
+import { ProjectService } from '../services/project.service';
+import { Project as ProjectData, Media, Layer } from '../app.models';
 
 @Component({
   selector: 'app-project',
   standalone: true,
-  imports: [CommonModule, MediaComponent, PreviewComponent, TimelineComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './project.html',
   styleUrl: './project.css',
 })
-export class Project implements OnInit, OnDestroy {
+export class Project implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private projectService = inject(ProjectService);
@@ -21,11 +20,18 @@ export class Project implements OnInit, OnDestroy {
   projectId = '';
   project = signal<ProjectData | null>(null);
   isLoading = signal(true);
-  movie: any;
-  layers = signal<any[]>([]); // For timeline
 
-  // Media for passing to media component
-  projectMedia = signal<Media[]>([]);
+  // Counts
+  layerCount = signal(0);
+  mediaCount = signal(0);
+
+  // Editable fields bound to UI
+  editName = signal('');
+  editDuration = signal(0);
+  editWidth = signal(0);
+  editHeight = signal(0);
+  editTemplate = signal<'portrait' | 'landscape'>('landscape');
+  showEditDetails = signal(false);
 
   async ngOnInit() {
     this.projectId = this.route.snapshot.paramMap.get('id') || '';
@@ -44,17 +50,23 @@ export class Project implements OnInit, OnDestroy {
       const project = await this.projectService.getProjectById(this.projectId);
 
       if (!project) {
-        // Project not found, redirect to dashboard
         this.router.navigate(['/dashboard']);
         return;
       }
 
       this.project.set(project);
 
-      // Load existing media for media component
-      if (project.media && project.media.length > 0) {
-        this.projectMedia.set(project.media);
-      }
+      // Initialize edit fields
+      this.editName.set(project.name);
+      this.editDuration.set(project.duration || 5);
+      this.editWidth.set(project.width);
+      this.editHeight.set(project.height);
+      this.editTemplate.set(project.template); // Assuming template is on project, if not defaults to landscape
+
+      // Set counts
+      this.layerCount.set(project.layers?.length || 0);
+      this.mediaCount.set(project.media?.length || 0);
+
     } catch (error) {
       console.error('Error loading project:', error);
       this.router.navigate(['/dashboard']);
@@ -63,99 +75,60 @@ export class Project implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
-    // Cleanup if needed
-  }
-
-  onMediaChange(media: Media[]) {
-    this.projectMedia.set(media);
-  }
-
-  async onMediaDrop(media: Media) {
-    // Logic for media drop needs to coordinate with Preview now, 
-    // or we just add to media list. The prompt asked to move initEtro. 
-    // Assuming onMediaDrop logic for updating the movie should also move or be handled via signal updates to project.
-    // For now, removing direct movie manipulation.
-    console.log('Media drop', media);
-  }
-
   async saveProject() {
-    if (!this.projectId) return;
+    if (!this.projectId || !this.project()) return;
 
     try {
       this.isLoading.set(true);
-      console.log('Saving project...');
-
-      // Serialize timeline
-      let timelineData = null;
-      if (this.movie && this.movie.layers && this.movie.layers.length > 0) {
-        // Assuming single scene at index 0
-        const scene = this.movie.layers[0];
-
-        // Map layers to a serializable format
-        // We need to handle different layer types
-        const serializedLayers = scene.layers.map((layer: any) => {
-          const base = {
-            name: layer.name,
-            startTime: layer.startTime,
-            duration: layer.duration,
-            // Determine type based on constructor name or specific properties
-            // simplified check:
-            type: layer.constructor.name
-          };
-
-          // specific properties based on type
-          let specificProps = {};
-          if (layer.constructor.name === 'Image' || layer.constructor.name === 'Video') {
-            specificProps = {
-              source: layer.source, // This should be the path/url
-              x: layer.x,
-              y: layer.y,
-              width: layer.width,
-              height: layer.height
-            };
-          } else if (layer.constructor.name === 'Audio') {
-            specificProps = {
-              source: layer.source
-            };
-          } else if (layer.constructor.name === 'Rect') {
-            specificProps = {
-              color: layer.color,
-              x: layer.x,
-              y: layer.y,
-              width: layer.width,
-              height: layer.height
-            };
-          } else if (layer.constructor.name === 'Text') {
-            specificProps = {
-              text: layer.text,
-              color: layer.color,
-              font: layer.font,
-              x: layer.x,
-              y: layer.y
-            };
-          }
-
-          return { ...base, ...specificProps };
-        });
-
-        timelineData = {
-          duration: scene.duration,
-          layers: serializedLayers
-        };
-      }
+      console.log('Saving project metadata...');
 
       await this.projectService.updateProject(this.projectId, {
-        media: this.projectMedia(),
-        updatedAt: new Date().toDateString()
+        name: this.editName(),
+        duration: this.editDuration(),
+        width: this.editWidth(),
+        height: this.editHeight(),
+        template: this.editTemplate(),
+        updatedAt: new Date().toISOString()
       });
 
       console.log('Project saved successfully');
+      // Reload to reflect any other side effects if needed, or just update local state
+      const updatedProject = {
+        ...this.project()!,
+        name: this.editName(),
+        duration: this.editDuration(),
+        width: this.editWidth(),
+        height: this.editHeight(),
+        template: this.editTemplate(),
+      };
+      this.project.set(updatedProject);
+
     } catch (error) {
       console.error('Error saving project:', error);
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  // Navigation Actions
+  openLayers() {
+    this.router.navigate(['layers'], { relativeTo: this.route });
+  }
+
+  openMedia() {
+    // Assuming media is a route or a modal. 
+    // If it was a component on page, we need a route.
+    // Based on prompt "Preview which will redirect route to respective components"
+    // implies new routes maybe? Or existing ones. 
+    // There is no media route yet in app.routes.ts usually, but I'll assume we might need to create one or use a placeholder.
+    // For now, let's assume we navigate to a 'media' child route.
+    this.router.navigate(['media'], { relativeTo: this.route });
+  }
+
+  openPreview() {
+    // Preview component was previously embedded. Now requesting redirect.
+    // Need a preview route.
+    this.router.navigate(['preview'], { relativeTo: this.route });
   }
 }
 

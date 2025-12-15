@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Media } from '../services/project.service';
+import { Media } from '../app.models';
 
 @Component({
   selector: 'app-timeline',

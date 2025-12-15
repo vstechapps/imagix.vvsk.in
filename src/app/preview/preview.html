@@ -1,3 +1,23 @@
-<div class="canvas-shell">
-    <canvas #canvas></canvas>
+<div class="preview-container">
+    <div class="canvas-shell">
+        <canvas #canvas></canvas>
+        <div *ngIf="isLoading()" class="loading-overlay">Loading...</div>
+    </div>
+
+    <div class="controls">
+        <div class="buttons">
+            <button class="icon-btn" (click)="togglePlay()">
+                {{ isPlaying() ? '⏸' : '▶' }}
+            </button>
+            <button class="icon-btn" (click)="stop()">⏹</button>
+        </div>
+
+        <div class="progress">
+            <input type="range" [value]="currentTime()" [max]="duration()" step="0.1" (input)="seek($event)">
+        </div>
+
+        <div class="time-display">
+            {{ currentTime() | number:'1.1-1' }} / {{ duration() | number:'1.1-1' }}s
+        </div>
+    </div>
 </div>

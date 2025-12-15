@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
 import { LayoutService } from '../services/layout.service';
 import { filter } from 'rxjs/operators';
-import { ProjectService, Project } from '../services/project.service';
+import { ProjectService } from '../services/project.service';
+import { Project } from '../app.models';
 
 @Component({
   selector: 'app-sidebar',

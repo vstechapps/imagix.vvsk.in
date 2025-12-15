@@ -4,47 +4,7 @@ import { AuthService } from './auth.service';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { FirestoreService } from './firestore.service';
-
-export interface Media {
-    file?: File; // Only available in browser, not stored in Firestore
-    path: string; // Blob URL or storage URL
-    localPath?: string; // Local file path (if available/supported)
-    type: 'image' | 'video' | 'audio';
-    format: string;
-    name?: string; // File name
-    size?: number; // File size in bytes
-}
-
-export interface Layer {
-    name: string;
-    type: 'Visual' | 'Text' | 'Audio' | 'Video'; // User facing types
-    // Etro/Internal properties
-    startTime?: number;
-    duration?: number;
-    source?: string; // For visual/audio/video
-    text?: string;
-    x?: number;
-    y?: number;
-    width?: number;
-    height?: number;
-    color?: string;
-    font?: string;
-    layerId: string; // Internal ID for tracking
-}
-
-export interface Project {
-    id?: string;
-    name: string;
-    userId: string;
-    template: 'portrait' | 'landscape';
-    duration: number; // in seconds
-    width: number;
-    height: number;
-    createdAt: string;
-    updatedAt: string;
-    media?: Media[];
-    layers?: Layer[];
-}
+import { Project } from '../app.models';
 
 @Injectable({
     providedIn: 'root'

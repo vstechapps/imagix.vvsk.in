@@ -116,6 +116,8 @@
     max-width: 90%;
     border: 1px solid #374151;
     color: #e5e7eb;
+    max-height: 85vh;
+    overflow-y: auto;
 }
 
 .dialog h3 {

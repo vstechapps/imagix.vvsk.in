@@ -1,24 +1,83 @@
 <div class="project-container">
   <header class="project-header">
     <div>
-      <p class="eyebrow">Project</p>
-      <h1 *ngIf="!isLoading()">{{ project()?.name || 'Loading...' }}</h1>
+      <p class="eyebrow">Project Settings</p>
       <h1 *ngIf="isLoading()">Loading...</h1>
-    </div>
-    <div class="actions">
-      <button class="btn secondary" (click)="saveProject()">Save</button>
-      <button class="btn secondary">Export</button>
-      <button class="btn primary">Render</button>
+      <div *ngIf="!isLoading()" class="project-header-content">
+        <h1>{{ project()?.name }}</h1>
+        <button class="icon-btn edit-toggle" (click)="showEditDetails.set(!showEditDetails())">
+          {{ showEditDetails() ? 'Hide Settings' : 'Edit Project' }} ✎
+        </button>
+      </div>
     </div>
   </header>
 
-  <section class="editor">
-    <app-preview [project]="project()"></app-preview>
+  <section class="project-details" *ngIf="!isLoading()">
 
-    <app-timeline [layers]="layers()" (mediaDrop)="onMediaDrop($event)">
-    </app-timeline>
+    <!-- Collapsible Edit Section -->
+    <div class="edit-section" *ngIf="showEditDetails()">
+      <div class="details-grid">
+        <div class="card">
+          <h3>General</h3>
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" [ngModel]="editName()" (ngModelChange)="editName.set($event)">
+          </div>
+          <div class="form-group">
+            <label>Template</label>
+            <select [ngModel]="editTemplate()" (ngModelChange)="editTemplate.set($event)">
+              <option value="portrait">Portrait</option>
+              <option value="landscape">Landscape</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Dimensions & Duration</h3>
+          <div class="form-group">
+            <label>Duration (s)</label>
+            <input type="number" [ngModel]="editDuration()" (ngModelChange)="editDuration.set($event)">
+          </div>
+          <div class="form-group">
+            <label>Width</label>
+            <input type="number" [ngModel]="editWidth()" (ngModelChange)="editWidth.set($event)">
+          </div>
+          <div class="form-group">
+            <label>Height</label>
+            <input type="number" [ngModel]="editHeight()" (ngModelChange)="editHeight.set($event)">
+          </div>
+        </div>
+      </div>
+
+      <div class="edit-actions">
+        <button class="btn primary" (click)="saveProject()">Save Changes</button>
+      </div>
+    </div>
+
+    <div class="details-grid">
+      <div class="card">
+        <h3>Stats</h3>
+        <p><strong>Layers:</strong> {{ layerCount() }}</p>
+        <p><strong>Media Files:</strong> {{ mediaCount() }}</p>
+        <p><strong>Created:</strong> {{ project()?.createdAt | date:'medium' }}</p>
+        <p><strong>Last Updated:</strong> {{ project()?.updatedAt | date:'medium' }}</p>
+      </div>
+    </div>
+
+    <div class="navigation-actions">
+      <button class="nav-card" (click)="openMedia()">
+        <h3>Media Library</h3>
+        <p>Manage project assets</p>
+      </button>
+      <button class="nav-card" (click)="openLayers()">
+        <h3>Layers</h3>
+        <p>Edit timeline layers</p>
+      </button>
+      <button class="nav-card" (click)="openPreview()">
+        <h3>Preview</h3>
+        <p>Watch and render</p>
+      </button>
+    </div>
+
   </section>
-
-  <!-- Media Library Component -->
-  <app-media [projectId]="projectId" [initialMedia]="projectMedia()" (mediaChange)="onMediaChange($event)"></app-media>
 </div>

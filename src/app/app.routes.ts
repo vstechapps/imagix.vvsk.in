@@ -11,5 +11,6 @@ export const routes: Routes = [
     { path: 'projects/:id', component: Project, canActivate: [authGuard] },
     { path: 'projects/:id/media', loadComponent: () => import('./media/media').then(m => m.MediaComponent), canActivate: [authGuard] },
     { path: 'projects/:id/layers', loadComponent: () => import('./layers/layers').then(m => m.LayersComponent), canActivate: [authGuard] },
+    { path: 'projects/:id/preview', loadComponent: () => import('./preview/preview').then(m => m.PreviewComponent), canActivate: [authGuard] },
     { path: '**', redirectTo: 'dashboard' }
 ];

@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { ProjectService, Project } from '../services/project.service';
+import { ProjectService } from '../services/project.service';
+import { Project } from '../app.models';
 import { EventService } from '../services/event.service';
 
 @Component({
