@@ -73,6 +73,9 @@ export class PreviewComponent implements OnInit, OnDestroy {
       this.canvasRef.nativeElement.width = width;
       this.canvasRef.nativeElement.height = height;
 
+      // Optimize canvas for readback operations
+      const ctx = this.canvasRef.nativeElement.getContext('2d', { willReadFrequently: true });
+
       // Movie WITH canvas attached
       const movie = new etro.Movie({
         canvas: this.canvasRef.nativeElement
