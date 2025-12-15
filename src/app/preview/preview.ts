@@ -147,6 +147,36 @@ export class PreviewComponent implements OnInit, OnDestroy {
     this._movie.currentTime = time;
   }
 
+  exportVideo() {
+    if (!this._movie) return;
+    this.isLoading.set(true);
+
+    // Stop any playback first
+    this.stop();
+
+    this._movie.record({
+      frameRate: 30,
+    }).then((blob: Blob) => {
+      console.log(`Recorded ${blob.size} bytes`);
+      this.downloadBlob(blob, `video-${new Date().getTime()}.webm`);
+      this.isLoading.set(false);
+    }).catch((err: any) => {
+      console.error('Export failed', err);
+      this.isLoading.set(false);
+    });
+  }
+
+  private downloadBlob(blob: Blob, filename: string) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   startProgressTracker() {
     clearInterval(this._updateInterval); // Ensure no duplicates
     this._updateInterval = setInterval(() => {

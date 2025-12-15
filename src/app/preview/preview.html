@@ -10,6 +10,7 @@
                 {{ isPlaying() ? '⏸' : '▶' }}
             </button>
             <button class="icon-btn" (click)="stop()">⏹</button>
+            <button class="icon-btn" (click)="exportVideo()" title="Export Video" [disabled]="isLoading()">⬇</button>
         </div>
 
         <div class="progress">
