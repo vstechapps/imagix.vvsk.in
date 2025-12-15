@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Media, ProjectService } from '../services/project.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-media',
@@ -15,6 +16,7 @@ export class MediaComponent implements OnInit {
   @Output() mediaChange = new EventEmitter<Media[]>();
 
   private projectService = inject(ProjectService);
+  private route = inject(ActivatedRoute);
 
   // Media management
   media = signal<Media[]>([]);
@@ -27,11 +29,30 @@ export class MediaComponent implements OnInit {
   isVideosExpanded = signal(false);
   isAudioExpanded = signal(false);
 
-  ngOnInit() {
-    // Load initial media if provided
-    if (this.initialMedia && this.initialMedia.length > 0) {
-      this.media.set(this.initialMedia);
-      this.organizeMedia(this.initialMedia);
+
+
+  async ngOnInit() {
+    // Check if projectId is in route if not provided as Input
+    if (!this.projectId) {
+      this.projectId = this.route.snapshot.paramMap.get('id') || '';
+
+      if (this.projectId) {
+        await this.loadProjectMedia();
+      }
+    } else {
+      // Load initial media if provided via Input
+      if (this.initialMedia && this.initialMedia.length > 0) {
+        this.media.set(this.initialMedia);
+        this.organizeMedia(this.initialMedia);
+      }
+    }
+  }
+
+  private async loadProjectMedia() {
+    const project = await this.projectService.getProjectById(this.projectId);
+    if (project && project.media) {
+      this.media.set(project.media);
+      this.organizeMedia(project.media);
     }
   }
 
@@ -52,9 +73,12 @@ export class MediaComponent implements OnInit {
       const path = URL.createObjectURL(file);
       const format = file.name.split('.').pop()?.toLowerCase() || '';
 
+      const localPath = (file as any).path || file.name;
+
       return {
         file,
         path,
+        localPath,
         type,
         format
       };
@@ -88,7 +112,8 @@ export class MediaComponent implements OnInit {
         type: m.type,
         format: m.format,
         name: m.file?.name || m.name,
-        size: m.file?.size || m.size
+        size: m.file?.size || m.size,
+        localPath: m.localPath
         // file property is excluded as it can't be serialized
       }));
 
@@ -133,11 +158,6 @@ export class MediaComponent implements OnInit {
     this.isAudioExpanded.set(!this.isAudioExpanded());
   }
 
-  onDragStart(event: DragEvent, media: Media) {
-    if (event.dataTransfer) {
-      event.dataTransfer.setData('application/json', JSON.stringify(media));
-      event.dataTransfer.effectAllowed = 'copy';
-    }
-  }
+
 }
 

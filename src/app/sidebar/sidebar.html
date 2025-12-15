@@ -1,7 +1,18 @@
 <nav class="sidebar" [class.open]="layoutService.sidebarOpen()">
     <ul>
         <li><a routerLink="/dashboard" routerLinkActive="active" (click)="closeSidebar()">Projects</a></li>
-        <li><a routerLink="/assets" routerLinkActive="active" (click)="closeSidebar()">Assets</a></li>
+
+        <ng-container *ngIf="currentProjectId()">
+            <li class="section-label">{{ activeProject()?.name || 'Current Project' }}</li>
+            <li><a [routerLink]="['/projects', currentProjectId(), 'media']" routerLinkActive="active"
+                    (click)="closeSidebar()">Media</a></li>
+            <li><a [routerLink]="['/projects', currentProjectId(), 'layers']" routerLinkActive="active"
+                    (click)="closeSidebar()">Layers</a></li>
+            <li><a [routerLink]="['/projects', currentProjectId(), 'preview']" routerLinkActive="active"
+                    (click)="closeSidebar()">Preview</a></li>
+            <li class="divider"></li>
+        </ng-container>
+
         <li><a routerLink="/settings" routerLinkActive="active" (click)="closeSidebar()">Settings</a></li>
     </ul>
 </nav>

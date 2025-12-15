@@ -23,7 +23,29 @@ export class Dashboard implements OnInit {
   projects = signal<Project[]>([]);
   showCreateDialog = signal(false);
   newProjectName = signal('');
+  newProjectTemplate = signal<'portrait' | 'landscape'>('portrait');
+  newProjectDuration = signal(3);
+  newProjectWidth = signal(1080);
+  newProjectHeight = signal(1920);
+
   isLoading = signal(false);
+
+  updateDimensions(template: string) {
+    if (template === 'portrait') {
+      this.newProjectWidth.set(1080);
+      this.newProjectHeight.set(1920);
+    } else {
+      this.newProjectWidth.set(1920);
+      this.newProjectHeight.set(1080);
+    }
+  }
+
+  // Derived dimensions based on template (default values)
+  // Portrait: 1080x1920, Landscape: 1920x1080
+  // Or maybe scaled down for web: P: 405x720, L: 720x405
+  // Let's use standard HD for now, UI can scale.
+  // Actually, user might want to custom? No, request said height/width based on template selected.
+
 
   ngOnInit() {
     this.loadProjects();
@@ -36,8 +58,8 @@ export class Dashboard implements OnInit {
 
   loadProjects() {
     this.projectService.getUserProjects().subscribe((projects: Project[]) => {
-        this.projects.set(projects);
-      },
+      this.projects.set(projects);
+    },
       (error) => {
         console.error('Error loading projects:', error);
       });
@@ -60,9 +82,14 @@ export class Dashboard implements OnInit {
       return;
     }
 
+    const template = this.newProjectTemplate();
+    const duration = this.newProjectDuration();
+    const width = this.newProjectWidth();
+    const height = this.newProjectHeight();
+
     this.isLoading.set(true);
     try {
-      await this.projectService.createProject(name);
+      await this.projectService.createProject(name, template, duration, width, height);
       this.closeCreateDialog();
     } catch (error: unknown) {
       console.error('Error creating project:', error);

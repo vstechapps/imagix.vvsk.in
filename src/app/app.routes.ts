@@ -9,5 +9,7 @@ export const routes: Routes = [
     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     { path: 'dashboard', component: Dashboard, canActivate: [authGuard] },
     { path: 'projects/:id', component: Project, canActivate: [authGuard] },
+    { path: 'projects/:id/media', loadComponent: () => import('./media/media').then(m => m.MediaComponent), canActivate: [authGuard] },
+    { path: 'projects/:id/layers', loadComponent: () => import('./layers/layers').then(m => m.LayersComponent), canActivate: [authGuard] },
     { path: '**', redirectTo: 'dashboard' }
 ];

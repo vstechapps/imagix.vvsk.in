@@ -1,0 +1,160 @@
+<div class="layers-container">
+    <div class="header">
+        <h2>Layers</h2>
+        <button class="add-btn" (click)="openAddLayerDialog()">+ Add Layer</button>
+    </div>
+
+    <div class="layers-list">
+        <div class="layer-item" *ngFor="let layer of layers()">
+            <div class="layer-info">
+                <span class="layer-name">{{ layer.name }}</span>
+                <span class="layer-type-badge">{{ layer.type }}</span>
+            </div>
+            <div class="layer-actions">
+                <button class="icon-btn edit-btn" (click)="openEditLayerDialog(layer)" title="Edit Layer">
+                    ✎
+                </button>
+                <button class="icon-btn delete-btn" (click)="deleteLayer(layer)" title="Delete Layer">
+                    ×
+                </button>
+            </div>
+        </div>
+
+        <div class="empty-state" *ngIf="layers().length === 0">
+            <p>No layers added yet.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Add Layer Dialog -->
+<div class="dialog-overlay" *ngIf="showAddLayerDialog()" (click)="closeAddLayerDialog()">
+    <div class="dialog" (click)="$event.stopPropagation()">
+        <h3>Add New Layer</h3>
+
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" [ngModel]="newLayerName()" (ngModelChange)="newLayerName.set($event)"
+                placeholder="Layer Name">
+        </div>
+
+        <div class="form-group">
+            <label>Type</label>
+            <select [ngModel]="newLayerType()" (ngModelChange)="newLayerType.set($event)">
+                <option value="Visual">Visual</option>
+                <option value="Text">Text</option>
+                <option value="Audio">Audio</option>
+                <option value="Video">Video</option>
+            </select>
+        </div>
+
+        <div class="dialog-actions">
+            <button class="cancel-btn" (click)="closeAddLayerDialog()">Cancel</button>
+            <button class="save-btn" (click)="addLayer()">Add</button>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Layer Dialog -->
+<div class="dialog-overlay" *ngIf="showEditLayerDialog() && selectedLayer()" (click)="closeEditLayerDialog()">
+    <div class="dialog" (click)="$event.stopPropagation()">
+        <h3>Edit Layer</h3>
+
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" [(ngModel)]="selectedLayer()!.name" placeholder="Layer Name">
+        </div>
+
+        <!-- Dynamic properties based on type -->
+        <ng-container [ngSwitch]="selectedLayer()!.type">
+
+            <!-- Common props -->
+            <div class="form-row">
+                <div class="form-group half">
+                    <label>Start Time (s)</label>
+                    <input type="number" [(ngModel)]="selectedLayer()!.startTime" step="0.1" min="0">
+                </div>
+                <div class="form-group half">
+                    <label>Duration (s)</label>
+                    <input type="number" [(ngModel)]="selectedLayer()!.duration" step="0.1" min="0.1">
+                </div>
+            </div>
+
+            <div class="form-row" *ngIf="selectedLayer()!.type !== 'Audio'">
+                <div class="form-group half">
+                    <label>X</label>
+                    <input type="number" [(ngModel)]="selectedLayer()!.x">
+                </div>
+                <div class="form-group half">
+                    <label>Y</label>
+                    <input type="number" [(ngModel)]="selectedLayer()!.y">
+                </div>
+            </div>
+
+            <!-- Text Specific -->
+            <ng-container *ngSwitchCase="'Text'">
+                <div class="form-group">
+                    <label>Text Content</label>
+                    <input type="text" [(ngModel)]="selectedLayer()!.text">
+                </div>
+                <div class="form-group">
+                    <label>Font</label>
+                    <input type="text" [(ngModel)]="selectedLayer()!.font" placeholder="e.g 24px Arial">
+                </div>
+                <div class="form-group">
+                    <label>Color</label>
+                    <input type="color" [(ngModel)]="selectedLayer()!.color">
+                </div>
+            </ng-container>
+
+            <!-- Visual Specific (Rect/Image placeholder) -->
+            <ng-container *ngSwitchCase="'Visual'">
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Width</label>
+                        <input type="number" [(ngModel)]="selectedLayer()!.width">
+                    </div>
+                    <div class="form-group half">
+                        <label>Height</label>
+                        <input type="number" [(ngModel)]="selectedLayer()!.height">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Color (if solid)</label>
+                    <input type="color" [(ngModel)]="selectedLayer()!.color">
+                </div>
+            </ng-container>
+
+            <!-- Video Specific -->
+            <ng-container *ngSwitchCase="'Video'">
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Width</label>
+                        <input type="number" [(ngModel)]="selectedLayer()!.width">
+                    </div>
+                    <div class="form-group half">
+                        <label>Height</label>
+                        <input type="number" [(ngModel)]="selectedLayer()!.height">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Source URL</label>
+                    <input type="text" [(ngModel)]="selectedLayer()!.source">
+                </div>
+            </ng-container>
+
+            <!-- Audio Specific -->
+            <ng-container *ngSwitchCase="'Audio'">
+                <div class="form-group">
+                    <label>Source URL</label>
+                    <input type="text" [(ngModel)]="selectedLayer()!.source">
+                </div>
+            </ng-container>
+
+        </ng-container>
+
+        <div class="dialog-actions">
+            <button class="cancel-btn" (click)="closeEditLayerDialog()">Cancel</button>
+            <button class="save-btn" (click)="saveLayerChanges()">Save Changes</button>
+        </div>
+    </div>
+</div>

@@ -13,7 +13,7 @@
   </header>
 
   <section class="editor">
-    <app-preview [movie]="movie"></app-preview>
+    <app-preview [project]="project()"></app-preview>
 
     <app-timeline [layers]="layers()" (mediaDrop)="onMediaDrop($event)">
     </app-timeline>

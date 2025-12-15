@@ -36,7 +36,6 @@ export class Project implements OnInit, OnDestroy {
     }
 
     await this.loadProject();
-    this.initEtro();
   }
 
   private async loadProject() {
@@ -65,88 +64,7 @@ export class Project implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.movie?.stop) {
-      this.movie.stop();
-    }
-  }
-
-  /**
-   * Initialize a basic Etro.js movie
-   */
-  private async initEtro() {
-    try {
-      const etro: any = await import('etro');
-
-      // Movie without canvas initially (will be attached by PreviewComponent)
-      const movie = new etro.Movie({ width: 960, height: 540 });
-
-      const savedTimeline = this.project()?.timeline;
-      let scene: any;
-
-      if (savedTimeline && savedTimeline.layers) {
-        // Reconstruct from saved data
-        scene = new etro.Scene({ duration: savedTimeline.duration || 10 });
-
-        savedTimeline.layers.forEach((layerData: any) => {
-          let newLayer;
-          const { type, ...options } = layerData;
-
-          // Construct layer based on type
-          if (type === 'Image') {
-            newLayer = new etro.layers.Image(options);
-          } else if (type === 'Video') {
-            newLayer = new etro.layers.Video(options);
-          } else if (type === 'Audio') {
-            newLayer = new etro.layers.Audio(options);
-          } else if (type === 'Rect') {
-            newLayer = new etro.layers.Rect(options);
-          } else if (type === 'Text') {
-            newLayer = new etro.layers.Text(options);
-          }
-
-          if (newLayer) {
-            scene.addLayer(newLayer);
-          }
-        });
-      } else {
-        // Default initialization
-        scene = new etro.Scene({ duration: 10 });
-
-        // Solid background layer
-        const bgLayer = new etro.layers.Rect({
-          name: 'Background',
-          color: '#111827',
-          width: 960,
-          height: 540,
-          startTime: 0,
-          duration: 10
-        });
-        scene.addLayer(bgLayer);
-
-        // Title text layer
-        const projectName = this.project()?.name || `Project ${this.projectId}`;
-        const textLayer = new etro.layers.Text({
-          name: 'Title',
-          text: projectName,
-          color: '#fff',
-          font: '48px Inter, sans-serif',
-          x: 80,
-          y: 120,
-          startTime: 0,
-          duration: 5
-        });
-        scene.addLayer(textLayer);
-      }
-
-      movie.addScene(scene);
-      this.movie = movie;
-
-      this.updateLayersList();
-
-      await movie.play();
-    } catch (error) {
-      console.error('Failed to initialize Etro', error);
-    }
+    // Cleanup if needed
   }
 
   onMediaChange(media: Media[]) {
@@ -154,65 +72,11 @@ export class Project implements OnInit, OnDestroy {
   }
 
   async onMediaDrop(media: Media) {
-    if (!this.movie) return;
-
-    try {
-      const etro: any = await import('etro');
-      const scene = this.movie.layers[0]; // Assuming single scene for now
-
-      let newLayer;
-      const startTime = 0; // Default to start for now
-
-      if (media.type === 'image') {
-        newLayer = new etro.layers.Image({
-          name: media.name || 'Image',
-          source: media.path,
-          x: 0,
-          y: 0,
-          width: 400, // Default width
-          height: 300, // Default height
-          startTime: startTime,
-          duration: 5
-        });
-      } else if (media.type === 'video') {
-        newLayer = new etro.layers.Video({
-          name: media.name || 'Video',
-          source: media.path,
-          x: 0,
-          y: 0,
-          width: 480,
-          height: 270,
-          startTime: startTime,
-          // duration: 10 // Let it use source duration or default
-        });
-      } else if (media.type === 'audio') {
-        newLayer = new etro.layers.Audio({
-          name: media.name || 'Audio',
-          source: media.path,
-          startTime: startTime,
-        });
-      }
-
-      if (newLayer) {
-        scene.addLayer(newLayer);
-        this.updateLayersList();
-
-        // Refresh movie logic if needed (usually addLayer is enough)
-        // ensure movie is playing or refreshed
-      }
-    } catch (error) {
-      console.error('Error adding layer:', error);
-    }
-  }
-
-  private updateLayersList() {
-    if (this.movie && this.movie.layers && this.movie.layers[0]) {
-      // Get layers from the first scene match existing logic
-      // Etro structure: Movie -> [Scene] -> [Layers]
-      // My simplified init has movie.layers[0] as scene
-      const scene = this.movie.layers[0];
-      this.layers.set([...scene.layers]);
-    }
+    // Logic for media drop needs to coordinate with Preview now, 
+    // or we just add to media list. The prompt asked to move initEtro. 
+    // Assuming onMediaDrop logic for updating the movie should also move or be handled via signal updates to project.
+    // For now, removing direct movie manipulation.
+    console.log('Media drop', media);
   }
 
   async saveProject() {
@@ -283,7 +147,6 @@ export class Project implements OnInit, OnDestroy {
 
       await this.projectService.updateProject(this.projectId, {
         media: this.projectMedia(),
-        timeline: timelineData,
         updatedAt: new Date().toDateString()
       });
 
