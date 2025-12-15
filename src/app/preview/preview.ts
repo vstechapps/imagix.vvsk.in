@@ -85,21 +85,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
           const { id, name, type, ...options } = layerData;
 
           // Construct layer based on type
-          // Note: etro.layers.Visual might not exist, usually it is etro.layer.Visual or similar. Check exact import.
-          // Assuming etro.layer.* per previous context.
           if (type === 'Visual') {
-            // 'Visual' in our model might map to a generic layer or specific shape if extended. 
-            // If model says Visual is for shapes, maybe map to etro.layer.Video/Image if source present or custom? 
-            // If just a container/rect:
-            // For now assuming existing logic was correct or close.
-            // If 'Visual' refers to 'etro.layer.Visual', good.
-            // Previous code used 'etro.layer.Visual' but usually 'etro.Visual' doesn't exist? 
-            // Let's use generic if needed or keep user's flow.
-            // Actually, Etro usually has 'etro.layer.Image', 'etro.layer.Video', 'etro.layer.Audio', 'etro.layer.Text'.
-            // There isn't a generic 'Visual' layer visible in docs usually, maybe 'etro.layer.Visual' is an abstract?
-            // Assuming previous code worked or we use a fallback. 
-            // IF 'Visual' = Shape (Rect), maybe we need a custom shape or Image with color?
-            // Let's stick to existing map, but ensure we handle constructor carefully.
             newLayer = new etro.layer.Visual(options);
           } else if (type === 'Text') {
             newLayer = new etro.layer.Text(options);
@@ -115,10 +101,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
       }
 
       this._movie = movie;
-      // Don't auto play, wait for user
-      // await movie.play(); 
       this.isPlaying.set(false);
-      this.startProgressTracker();
 
     } catch (error) {
       console.error('Failed to initialize Etro in preview', error);
@@ -130,9 +113,15 @@ export class PreviewComponent implements OnInit, OnDestroy {
     if (this.isPlaying()) {
       this._movie.pause();
       this.isPlaying.set(false);
+      clearInterval(this._updateInterval);
     } else {
-      this._movie.play().then(() => {
-        this.isPlaying.set(true);
+      // Clear any existing interval just in case
+      clearInterval(this._updateInterval);
+      this.isPlaying.set(true); // Optimistic update
+      this.startProgressTracker();
+      this._movie.play().catch(() => {
+        this.isPlaying.set(false);
+        clearInterval(this._updateInterval);
       });
     }
   }
@@ -140,6 +129,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
   stop() {
     if (!this._movie) return;
     this._movie.stop();
+    clearInterval(this._updateInterval);
     this.isPlaying.set(false);
     this._movie.currentTime = 0;
     this.currentTime.set(0);
@@ -150,13 +140,18 @@ export class PreviewComponent implements OnInit, OnDestroy {
     const time = Number(event.target.value);
     this.currentTime.set(time);
     this._movie.currentTime = time;
-    // If was playing, it might continue or pause depending on Etro behavior, usually continues if not paused explicitly.
   }
 
   startProgressTracker() {
+    clearInterval(this._updateInterval); // Ensure no duplicates
     this._updateInterval = setInterval(() => {
-      if (this._movie && this.isPlaying()) {
+      // Check if movie exists. usage of isPlaying check here is redundant if we manage interval correctly
+      if (this._movie) {
         this.currentTime.set(this._movie.currentTime);
+        // Auto-stop if reached end? Etro might loop or stop.
+        if (this._movie.currentTime >= this.duration()) {
+          this.stop();
+        }
       }
     }, 100);
   }
