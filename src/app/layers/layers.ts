@@ -105,7 +105,7 @@ export class LayersComponent implements OnInit {
         textAlign: 'left',
         textBaseline: 'alphabetic',
         textDirection: 'ltr',
-        textStroke: { color: '#000000', position: 'outside', thickness: 0 }
+        textStroke: null
       } as Text;
     } else if (type === 'Video') {
       newLayer = {
@@ -122,15 +122,6 @@ export class LayersComponent implements OnInit {
         sourceStartTime: 0, muted: false, volume: 1, playbackRate: 1
       } as Audio;
     } else if (type === 'Image') {
-      // Assuming Image type is handled or user meant 'Visual' with image source. 
-      // If 'Image' is a distinct type in dropdown (need to check LayersComponent.newLayerType options)
-      // The current dropdown has Visual, Text, Audio, Video. 
-      // If Visual is used for shapes AND images, we might need a subtype or just use Visual with source?
-      // Etro usually distinguishes. Models have Image interface.
-      // Let's assume 'Visual' in dropdown covers Image if source is present, OR we add Image to dropdown.
-      // RE-CHECKING DROPDOWN: It has "Visual, Text, Audio, Video".
-      // Updating dropdown in template might be needed if Image is distinct.
-      // For now, implementing Image init if type matches
       newLayer = {
         ...newLayer,
         source: '',

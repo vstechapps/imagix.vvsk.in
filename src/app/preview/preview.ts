@@ -81,6 +81,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
       const layers = this.project.layers;
 
       if (layers && layers.length > 0) {
+        console.log('Rendering Layers:', layers);
         layers.forEach((layerData: any) => {
           let newLayer;
           const { id, name, type, ...options } = layerData;
