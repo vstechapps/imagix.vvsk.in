@@ -62,7 +62,8 @@ export class PreviewComponent implements OnInit, OnDestroy {
     if (!this.project || !this.canvasRef) return;
 
     try {
-      const etro: any = await import('etro');
+      const etroModule: any = await import('etro');
+      const etro = etroModule.default;
 
       const width = this.project.width || 960;
       const height = this.project.height || 540;
