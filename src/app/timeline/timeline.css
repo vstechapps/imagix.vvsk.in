@@ -1,0 +1,66 @@
+.timeline-container {
+    width: 100%;
+    height: 100%;
+    background: #1f2937;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid #374151;
+}
+
+.timeline-header {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #374151;
+}
+
+.timeline-tracks {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    position: relative;
+}
+
+.track {
+    display: flex;
+    height: 48px;
+    background: #374151;
+    margin-bottom: 4px;
+    align-items: center;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.layer-info {
+    width: 150px;
+    padding: 0 10px;
+    font-size: 12px;
+    border-right: 1px solid #4b5563;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.layer-content {
+    flex: 1;
+    position: relative;
+    background: #4b5563;
+    height: 100%;
+}
+
+.clip {
+    height: 100%;
+    background: #3b82f6;
+    opacity: 0.8;
+    border-radius: 0 4px 4px 0;
+}
+
+.drop-zone {
+    margin-top: 10px;
+    height: 60px;
+    border: 2px dashed #6b7280;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9ca3af;
+}

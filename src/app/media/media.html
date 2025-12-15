@@ -24,7 +24,7 @@
         Select Images
       </button>
       <div class="media-grid" *ngIf="images().length > 0">
-        <div class="media-item" *ngFor="let img of images()">
+        <div class="media-item" *ngFor="let img of images()" draggable="true" (dragstart)="onDragStart($event, img)">
           <img [src]="img.path" [alt]="img.file?.name || img.name || 'Image'" />
           <div class="media-info">
             <span class="media-name">{{ img.file?.name || img.name || 'Unknown' }}</span>
@@ -59,7 +59,7 @@
         Select Videos
       </button>
       <div class="media-grid" *ngIf="videos().length > 0">
-        <div class="media-item" *ngFor="let video of videos()">
+        <div class="media-item" *ngFor="let video of videos()" draggable="true" (dragstart)="onDragStart($event, video)">
           <video [src]="video.path" controls></video>
           <div class="media-info">
             <span class="media-name">{{ video.file?.name || video.name || 'Unknown' }}</span>
@@ -94,7 +94,7 @@
         Select Audio
       </button>
       <div class="media-list" *ngIf="audio().length > 0">
-        <div class="media-item audio-item" *ngFor="let audioFile of audio()">
+        <div class="media-item audio-item" *ngFor="let audioFile of audio()" draggable="true" (dragstart)="onDragStart($event, audioFile)">
           <audio [src]="audioFile.path" controls></audio>
           <div class="media-info">
             <span class="media-name">{{ audioFile.file?.name || audioFile.name || 'Unknown' }}</span>

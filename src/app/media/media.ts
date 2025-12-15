@@ -21,7 +21,7 @@ export class MediaComponent implements OnInit {
   images = signal<Media[]>([]);
   videos = signal<Media[]>([]);
   audio = signal<Media[]>([]);
-  
+
   // Collapsible states
   isImagesExpanded = signal(false);
   isVideosExpanded = signal(false);
@@ -45,13 +45,13 @@ export class MediaComponent implements OnInit {
   onMediaSelected(event: Event, type: 'image' | 'video' | 'audio') {
     const input = event.target as HTMLInputElement;
     const files = input.files;
-    
+
     if (!files || files.length === 0) return;
 
     const newMedia: Media[] = Array.from(files).map(file => {
       const path = URL.createObjectURL(file);
       const format = file.name.split('.').pop()?.toLowerCase() || '';
-      
+
       return {
         file,
         path,
@@ -102,19 +102,19 @@ export class MediaComponent implements OnInit {
 
   removeMedia(mediaItem: Media) {
     const currentMedia = this.media();
-    const updatedMedia = currentMedia.filter(m => 
-      m.path !== mediaItem.path && 
+    const updatedMedia = currentMedia.filter(m =>
+      m.path !== mediaItem.path &&
       (m.file?.name !== mediaItem.file?.name && m.name !== mediaItem.name)
     );
     this.media.set(updatedMedia);
     this.organizeMedia(updatedMedia);
-    
+
     // Emit change event
     this.mediaChange.emit(updatedMedia);
-    
+
     // Save to project
     this.saveMediaToProject(updatedMedia);
-    
+
     // Revoke object URL to free memory if it's a blob URL
     if (mediaItem.path.startsWith('blob:')) {
       URL.revokeObjectURL(mediaItem.path);
@@ -131,6 +131,13 @@ export class MediaComponent implements OnInit {
 
   toggleAudio() {
     this.isAudioExpanded.set(!this.isAudioExpanded());
+  }
+
+  onDragStart(event: DragEvent, media: Media) {
+    if (event.dataTransfer) {
+      event.dataTransfer.setData('application/json', JSON.stringify(media));
+      event.dataTransfer.effectAllowed = 'copy';
+    }
   }
 }
 

@@ -1,0 +1,19 @@
+<div class="timeline-container" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+    <div class="timeline-header">
+        <h3>Timeline</h3>
+    </div>
+    <div class="timeline-tracks">
+        <div class="track" *ngFor="let layer of layers">
+            <div class="layer-info">
+                {{ layer.name }}
+            </div>
+            <div class="layer-content">
+                <!-- Visual representation of clips would go here -->
+                <div class="clip" [style.width.%]="100"></div>
+            </div>
+        </div>
+        <div class="drop-zone" *ngIf="isDragging">
+            Drop here to add to timeline
+        </div>
+    </div>
+</div>

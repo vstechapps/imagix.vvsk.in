@@ -21,6 +21,7 @@ export interface Project {
     createdAt: string;
     updatedAt: string;
     media?: Media[];
+    timeline?: any; // Serialized timeline data
 }
 
 @Injectable({
