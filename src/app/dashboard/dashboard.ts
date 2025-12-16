@@ -27,19 +27,19 @@ export class Dashboard implements OnInit, OnDestroy {
   newProjectName = signal('');
   newProjectTemplate = signal<'portrait' | 'landscape'>('portrait');
   newProjectDuration = signal(3);
-  newProjectWidth = signal(1080);
-  newProjectHeight = signal(1920);
+  newProjectWidth = signal(180);
+  newProjectHeight = signal(320);
 
   isLoading = signal(false);
   private projectsSub?: Subscription;
 
   updateDimensions(template: string) {
     if (template === 'portrait') {
-      this.newProjectWidth.set(1080);
-      this.newProjectHeight.set(1920);
+      this.newProjectWidth.set(180);
+      this.newProjectHeight.set(320);
     } else {
-      this.newProjectWidth.set(1920);
-      this.newProjectHeight.set(1080);
+      this.newProjectWidth.set(320);
+      this.newProjectHeight.set(180);
     }
   }
 

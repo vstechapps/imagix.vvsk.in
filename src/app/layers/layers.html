@@ -128,11 +128,11 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group half">
-                        <label>Text Alloc X</label>
+                        <label>Text X</label>
                         <input type="number" [(ngModel)]="editingLayer.textX">
                     </div>
                     <div class="form-group half">
-                        <label>Text Alloc Y</label>
+                        <label>Text Y</label>
                         <input type="number" [(ngModel)]="editingLayer.textY">
                     </div>
                 </div>
@@ -177,12 +177,12 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group half">
-                        <label>Dest Width</label>
-                        <input type="number" [(ngModel)]="editingLayer.destWidth">
+                        <label>Source Width</label>
+                        <input type="number" [(ngModel)]="editingLayer.sourceWidth">
                     </div>
                     <div class="form-group half">
-                        <label>Dest Height</label>
-                        <input type="number" [(ngModel)]="editingLayer.destHeight">
+                        <label>Source Height</label>
+                        <input type="number" [(ngModel)]="editingLayer.sourceHeight">
                     </div>
                 </div>
                 <div class="form-row">
@@ -193,6 +193,16 @@
                     <div class="form-group half">
                         <label>Dest Y</label>
                         <input type="number" [(ngModel)]="editingLayer.destY">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Dest Width</label>
+                        <input type="number" [(ngModel)]="editingLayer.destWidth">
+                    </div>
+                    <div class="form-group half">
+                        <label>Dest Height</label>
+                        <input type="number" [(ngModel)]="editingLayer.destHeight">
                     </div>
                 </div>
                 <div class="form-group">
@@ -215,6 +225,16 @@
                     <div class="form-group half">
                         <label>Source Height</label>
                         <input type="number" [(ngModel)]="editingLayer.sourceHeight">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group half">
+                        <label>Dest X</label>
+                        <input type="number" [(ngModel)]="editingLayer.destX">
+                    </div>
+                    <div class="form-group half">
+                        <label>Dest Y</label>
+                        <input type="number" [(ngModel)]="editingLayer.destY">
                     </div>
                 </div>
                 <div class="form-row">
@@ -246,6 +266,10 @@
                         <label>Muted</label>
                         <input type="checkbox" [(ngModel)]="editingLayer.muted">
                     </div>
+                </div>
+                <div class="form-group">
+                    <label>Playback Rate</label>
+                    <input type="number" [(ngModel)]="editingLayer.playbackRate" step="0.1">
                 </div>
             </ng-container>
 
