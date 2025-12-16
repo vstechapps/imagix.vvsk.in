@@ -87,7 +87,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
         console.log('Rendering Layers:', layers);
         layers.forEach((layerData: any) => {
           let newLayer;
-          const { id, name, type, ...options } = layerData;
+          const { id, name, type, enabled, ...options } = layerData;
 
           // Construct layer based on type
           if (type === 'Visual') {
@@ -101,7 +101,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
           } else if (type === 'Audio') {
             newLayer = new etro.layer.Audio(options);
           }
-          if (newLayer) movie.layers.push(newLayer);
+          if (newLayer && enabled) movie.layers.push(newLayer);
         });
       }
 

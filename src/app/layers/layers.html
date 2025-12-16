@@ -60,9 +60,15 @@
     <div class="dialog" (click)="$event.stopPropagation()">
         <h3>Edit Layer</h3>
 
-        <div class="form-group">
-            <label>Name</label>
-            <input type="text" [(ngModel)]="editingLayer.name" placeholder="Layer Name">
+        <div class="form-row">
+            <div class="form-group half">
+                <label>Name</label>
+                <input type="text" [(ngModel)]="editingLayer.name" placeholder="Layer Name">
+            </div>
+            <div class="form-group half">
+                <label>Enabled</label>
+                <input type="checkbox" [(ngModel)]="editingLayer.enabled">
+            </div>
         </div>
 
         <!-- Dynamic properties based on type -->
@@ -77,6 +83,17 @@
                 <div class="form-group half">
                     <label>Duration (s)</label>
                     <input type="number" [(ngModel)]="editingLayer.duration" step="0.1" min="0.1">
+                </div>
+            </div>
+
+            <div class="form-row" *ngIf="editingLayer.type !== 'Audio'">
+                <div class="form-group half">
+                    <label>Width</label>
+                    <input type="number" [(ngModel)]="editingLayer.width">
+                </div>
+                <div class="form-group half">
+                    <label>Height</label>
+                    <input type="number" [(ngModel)]="editingLayer.height">
                 </div>
             </div>
 
@@ -133,16 +150,6 @@
 
             <!-- Visual Specific (Rect/Image placeholder) -->
             <ng-container *ngSwitchCase="'Visual'">
-                <div class="form-row">
-                    <div class="form-group half">
-                        <label>Width</label>
-                        <input type="number" [(ngModel)]="editingLayer.width">
-                    </div>
-                    <div class="form-group half">
-                        <label>Height</label>
-                        <input type="number" [(ngModel)]="editingLayer.height">
-                    </div>
-                </div>
                 <div class="form-group">
                     <label>Background Color</label>
                     <input type="color" [(ngModel)]="editingLayer.background">

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -6,6 +6,7 @@ import { AuthService } from '../services/auth.service';
 import { ProjectService } from '../services/project.service';
 import { Project } from '../app.models';
 import { EventService } from '../services/event.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,7 +15,7 @@ import { EventService } from '../services/event.service';
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class Dashboard implements OnInit {
+export class Dashboard implements OnInit, OnDestroy {
 
   private authService = inject(AuthService);
   private projectService = inject(ProjectService);
@@ -30,6 +31,7 @@ export class Dashboard implements OnInit {
   newProjectHeight = signal(1920);
 
   isLoading = signal(false);
+  private projectsSub?: Subscription;
 
   updateDimensions(template: string) {
     if (template === 'portrait') {
@@ -41,24 +43,23 @@ export class Dashboard implements OnInit {
     }
   }
 
-  // Derived dimensions based on template (default values)
-  // Portrait: 1080x1920, Landscape: 1920x1080
-  // Or maybe scaled down for web: P: 405x720, L: 720x405
-  // Let's use standard HD for now, UI can scale.
-  // Actually, user might want to custom? No, request said height/width based on template selected.
-
 
   ngOnInit() {
     this.loadProjects();
 
-    // Listen for create project events from header
+    // Listen for create createProject events from header
     this.eventService.createProject$.subscribe(() => {
       this.openCreateDialog();
     });
   }
 
+  ngOnDestroy() {
+    this.projectsSub?.unsubscribe();
+  }
+
   loadProjects() {
-    this.projectService.getUserProjects().subscribe((projects: Project[]) => {
+    this.projectsSub?.unsubscribe();
+    this.projectsSub = this.projectService.getUserProjects().subscribe((projects: Project[]) => {
       this.projects.set(projects);
     },
       (error) => {
@@ -92,6 +93,7 @@ export class Dashboard implements OnInit {
     try {
       await this.projectService.createProject(name, template, duration, width, height);
       this.closeCreateDialog();
+      this.loadProjects();
     } catch (error: unknown) {
       console.error('Error creating project:', error);
       alert('Failed to create project. Please try again.');
@@ -108,6 +110,7 @@ export class Dashboard implements OnInit {
 
     try {
       await this.projectService.deleteProject(project.id);
+      this.loadProjects();
     } catch (error: unknown) {
       console.error('Error deleting project:', error);
       alert('Failed to delete project. Please try again.');
