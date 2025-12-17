@@ -1,0 +1,36 @@
+<div class="fonts-container">
+    <h2>Fonts</h2>
+
+    <div class="font-form">
+        <input type="text" placeholder="Font name" [(ngModel)]="form().name" />
+
+        <input type="text" placeholder="Font source URL" [(ngModel)]="form().source" />
+
+        <div class="actions">
+            <button class="primary" (click)="saveFont()">
+                {{ editingFontId() ? 'Update' : 'Add' }} Font
+            </button>
+            <button class="secondary" *ngIf="editingFontId()" (click)="resetForm()">
+                Cancel
+            </button>
+        </div>
+    </div>
+
+    <div class="fonts-list">
+        <div class="font-card" *ngFor="let font of fonts()">
+            <div class="info">
+                <strong>{{ font.name }}</strong>
+                <small>{{ font.source }}</small>
+            </div>
+
+            <div class="card-actions">
+                <button (click)="editFont(font)">Edit</button>
+                <button class="danger" (click)="deleteFont(font.id!)">Delete</button>
+            </div>
+        </div>
+
+        <div class="empty" *ngIf="fonts().length === 0">
+            No fonts added yet
+        </div>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 <nav class="sidebar" [class.open]="layoutService.sidebarOpen()">
     <ul>
         <li><a routerLink="/dashboard" routerLinkActive="active" (click)="closeSidebar()">Projects</a></li>
+        <li><a routerLink="/fonts" routerLinkActive="active" (click)="closeSidebar()">Fonts</a></li>
 
         <ng-container *ngIf="currentProjectId()">
             <li class="section-label">{{ activeProject()?.name || 'Current Project' }}</li>

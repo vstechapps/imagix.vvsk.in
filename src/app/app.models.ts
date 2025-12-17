@@ -115,3 +115,11 @@ export interface Project {
     media?: Media[];
     layers?: Layer[];
 }
+
+export interface Font {
+    id?: string;
+    name: string;
+    source: string;
+    createdAt: number;
+    updatedAt?: number;
+}

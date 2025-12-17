@@ -1,0 +1,84 @@
+.fonts-container {
+    max-width: 720px;
+    margin: auto;
+    padding: 24px;
+}
+
+h2 {
+    margin-bottom: 16px;
+}
+
+.font-form {
+    background: #fff;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .08);
+    margin-bottom: 24px;
+}
+
+.font-form input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    outline: none;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+}
+
+button {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+button.primary {
+    background: #3f51b5;
+    color: white;
+}
+
+button.secondary {
+    background: #eee;
+}
+
+button.danger {
+    background: #e53935;
+    color: white;
+}
+
+.fonts-list {
+    display: grid;
+    gap: 12px;
+}
+
+.font-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
+}
+
+.font-card small {
+    display: block;
+    color: #666;
+    word-break: break-all;
+}
+
+.card-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.empty {
+    text-align: center;
+    color: #777;
+    padding: 24px;
+}

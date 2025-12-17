@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1765959656013,
+  "timestamp": 1765960788221,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -11,15 +11,15 @@
         "ignoreVary": true
       },
       "urls": [
-        "/chunk-67P7GBHR.js",
-        "/chunk-DBVNR74N.js",
+        "/chunk-7JF6FE4A.js",
+        "/chunk-ET5X77ES.js",
         "/chunk-IMPBB4AK.js",
-        "/chunk-KEWHQ4TT.js",
-        "/chunk-MO5GHXH7.js",
-        "/chunk-O36SQ6IK.js",
+        "/chunk-JAMJTZVC.js",
         "/chunk-V6IRMN6Y.js",
+        "/chunk-WF4LSOEZ.js",
+        "/chunk-YSVRCJTO.js",
         "/index.html",
-        "/main-BVZOQB6M.js",
+        "/main-TDL55IPK.js",
         "/manifest.webmanifest",
         "/styles-YATH62OO.css"
       ],
@@ -40,16 +40,16 @@
   ],
   "dataGroups": [],
   "hashTable": {
-    "/chunk-67P7GBHR.js": "1c3fed5ef3b1c5475217a9b1d01a8814838f65ac",
-    "/chunk-DBVNR74N.js": "7b40d29aaae522cace669a17fdb0764b9f3aa601",
+    "/chunk-7JF6FE4A.js": "e388648177201bab750634fd83fccc4f44ed366f",
+    "/chunk-ET5X77ES.js": "9f8f18056f9e03db7fa49bc2a337d3d16b09d318",
     "/chunk-IMPBB4AK.js": "b808d1bcf32ded8ed458df18979c861687d0ccb3",
-    "/chunk-KEWHQ4TT.js": "79a83a8e8328a00c77da54ab1e89971a0b687161",
-    "/chunk-MO5GHXH7.js": "40a483a123b3aa1ecc788d072baa20a31f76dbb3",
-    "/chunk-O36SQ6IK.js": "28f20fb8cccc95d4e62cfb72993f24d8efeb58de",
+    "/chunk-JAMJTZVC.js": "d16bd62c113f532ca63f0d7c244740ede37ed995",
     "/chunk-V6IRMN6Y.js": "1d0f553c48e8b6363c5da1caf1695e795cb94c58",
+    "/chunk-WF4LSOEZ.js": "d63c2594b15622b9ea2cbc42b3fc2f0997265dac",
+    "/chunk-YSVRCJTO.js": "9a130c7e72d2c6d8df390287bd14be54e11607ee",
     "/icons/imagix-logo.png": "85d42534f7f0ee0609d3804250db867a809f259e",
-    "/index.html": "87c03f9cb71a45050bf18a8f49522f0920942a97",
-    "/main-BVZOQB6M.js": "c3207f6a22bfc01dc87bf765f7a6ef5817a7c953",
+    "/index.html": "c07193634ed8e5c885ef771aeae0eebb150afd89",
+    "/main-TDL55IPK.js": "40bfb989dc6ceb5deae24e7d1892cd8cb35a51c4",
     "/manifest.webmanifest": "f5d121adfd39ef17a2d7d9cbe260f8115b6c58b4",
     "/styles-YATH62OO.css": "c4b9ffc49e3f1ca5b78cbba05b50361ce32b8801"
   },
