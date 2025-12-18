@@ -1,33 +1,42 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, collectionData, doc, deleteDoc, updateDoc, addDoc, query, orderBy } from '@angular/fire/firestore';
+import { FirestoreService } from './firestore.service';
 import { Observable } from 'rxjs';
 import { inject } from '@angular/core';
 import { Font } from '../app.models';
+import { orderBy } from '@angular/fire/firestore';
 
 @Injectable({ providedIn: 'root' })
 export class FontsService {
-    private firestore = inject(Firestore);
-    private fontsRef = collection(this.firestore, 'fonts');
+    private firestoreService = inject(FirestoreService);
+    private readonly FONTS_COLLECTION = 'fonts';
 
+    /** Real-time fonts stream */
     getFonts(): Observable<Font[]> {
-        const q = query(this.fontsRef, orderBy('createdAt', 'desc'));
-        return collectionData(q, { idField: 'id' }) as Observable<Font[]>;
+        return this.firestoreService.getQueryData<Font>(
+            this.FONTS_COLLECTION,
+            { idField: 'id' },
+            orderBy('createdAt', 'desc')
+        );
     }
 
-    addFont(font: Omit<Font, 'id'>) {
-        return addDoc(this.fontsRef, font);
-    }
-
-    updateFont(id: string, font: Partial<Font>) {
-        const ref = doc(this.firestore, `fonts/${id}`);
-        return updateDoc(ref, {
+    /** Create font */
+    addFont(font: Pick<Font, 'name' | 'source'>): Promise<string> {
+        return this.firestoreService.create<Font>(this.FONTS_COLLECTION, {
             ...font,
+            createdAt: Date.now()
+        });
+    }
+
+    /** Update font */
+    updateFont(id: string, data: Partial<Font>): Promise<void> {
+        return this.firestoreService.update<Font>(this.FONTS_COLLECTION, id, {
+            ...data,
             updatedAt: Date.now()
         });
     }
 
-    deleteFont(id: string) {
-        const ref = doc(this.firestore, `fonts/${id}`);
-        return deleteDoc(ref);
+    /** Delete font */
+    deleteFont(id: string): Promise<void> {
+        return this.firestoreService.delete(this.FONTS_COLLECTION, id);
     }
 }

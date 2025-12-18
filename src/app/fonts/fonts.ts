@@ -30,7 +30,6 @@ export class Fonts {
 
   saveFont() {
     const { name, source } = this.form();
-
     if (!name || !source) return;
 
     if (this.editingFontId()) {
@@ -39,11 +38,7 @@ export class Fonts {
         source
       });
     } else {
-      this.fontsService.addFont({
-        name,
-        source,
-        createdAt: Date.now()
-      });
+      this.fontsService.addFont({ name, source });
     }
 
     this.resetForm();
