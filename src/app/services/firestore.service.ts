@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, doc, addDoc, getDoc, getDocs, updateDoc, deleteDoc, query, QueryConstraint, collectionData, DocumentData } from '@angular/fire/firestore';
+import { Firestore, collection, doc, addDoc, getDoc, getDocs, updateDoc, deleteDoc, query, QueryConstraint, collectionData, DocumentData, orderBy } from '@angular/fire/firestore';
 import { Auth } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 
@@ -47,7 +47,7 @@ export class FirestoreService {
     async getById<T extends DocumentData>(collectionPath: string, documentId: string): Promise<T | null> {
         const docRef = this.getDocument(collectionPath, documentId);
         const docSnap = await getDoc(docRef);
-        
+
         if (docSnap.exists()) {
             return { id: docSnap.id, ...docSnap.data() } as unknown as T;
         }
@@ -60,7 +60,7 @@ export class FirestoreService {
     async getAll<T extends DocumentData>(collectionPath: string): Promise<T[]> {
         const collectionRef = this.getCollection(collectionPath);
         const querySnapshot = await getDocs(collectionRef);
-        
+
         return querySnapshot.docs.map(doc => ({
             id: doc.id,
             ...doc.data()
@@ -75,10 +75,10 @@ export class FirestoreService {
         ...queryConstraints: QueryConstraint[]
     ): Promise<T[]> {
         const collectionRef = this.getCollection(collectionPath);
-        const q = queryConstraints.length > 0 
+        const q = queryConstraints.length > 0
             ? query(collectionRef, ...queryConstraints)
             : collectionRef;
-        
+
         const querySnapshot = await getDocs(q);
         return querySnapshot.docs.map(doc => ({
             id: doc.id,
@@ -94,7 +94,7 @@ export class FirestoreService {
         options?: { idField?: string }
     ): Observable<T[]> {
         const collectionRef = this.getCollection(collectionPath);
-        return collectionData(collectionRef, { idField: options?.idField || 'id' }) as Observable<T[]>;
+        return collectionData(query(collectionRef, orderBy('createdAt', 'desc')), { idField: options?.idField || 'id' }) as Observable<T[]>;
     }
 
     /**
@@ -106,12 +106,14 @@ export class FirestoreService {
         ...queryConstraints: QueryConstraint[]
     ): Observable<T[]> {
         const collectionRef = this.getCollection(collectionPath);
-        const q = queryConstraints.length > 0
+
+        const q = queryConstraints.length
             ? query(collectionRef, ...queryConstraints)
-            : collectionRef;
-        
+            : query(collectionRef, orderBy('createdAt', 'desc'));
+
         return collectionData(q, { idField: options?.idField || 'id' }) as Observable<T[]>;
     }
+
 
     /**
      * Update a document

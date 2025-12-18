@@ -1,42 +1,66 @@
 import { Injectable } from '@angular/core';
 import { FirestoreService } from './firestore.service';
 import { Observable } from 'rxjs';
-import { inject } from '@angular/core';
 import { Font } from '../app.models';
-import { orderBy } from '@angular/fire/firestore';
+import { DOCUMENT } from '@angular/common';
+import { inject } from '@angular/core';
+import { map, take } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class FontsService {
-    private firestoreService = inject(FirestoreService);
     private readonly FONTS_COLLECTION = 'fonts';
+    private injectedFonts = new Set<string>();
+    private document = inject(DOCUMENT);
 
-    /** Real-time fonts stream */
+    constructor(private fs: FirestoreService) { }
+
     getFonts(): Observable<Font[]> {
-        return this.firestoreService.getQueryData<Font>(
+        return this.fs.getQueryData<Font>(
             this.FONTS_COLLECTION,
-            { idField: 'id' },
-            orderBy('createdAt', 'desc')
+            { idField: 'id' }
         );
     }
 
-    /** Create font */
-    addFont(font: Pick<Font, 'name' | 'source'>): Promise<string> {
-        return this.firestoreService.create<Font>(this.FONTS_COLLECTION, {
-            ...font,
-            createdAt: Date.now()
-        });
+    createFont(font: Omit<Font, 'id'>) {
+        return this.fs.create<Font>(this.FONTS_COLLECTION, font);
     }
 
-    /** Update font */
-    updateFont(id: string, data: Partial<Font>): Promise<void> {
-        return this.firestoreService.update<Font>(this.FONTS_COLLECTION, id, {
-            ...data,
-            updatedAt: Date.now()
-        });
+    updateFont(id: string, data: Partial<Font>) {
+        return this.fs.update<Font>(this.FONTS_COLLECTION, id, data);
     }
 
-    /** Delete font */
-    deleteFont(id: string): Promise<void> {
-        return this.firestoreService.delete(this.FONTS_COLLECTION, id);
+    deleteFont(id: string) {
+        return this.fs.delete(this.FONTS_COLLECTION, id);
     }
+
+    toggleEnabled(font: Font) {
+        return this.updateFont(font.id!, { enabled: !font.enabled });
+    }
+
+    /** Load & inject enabled fonts once */
+    loadFonts(): void {
+        this.getFonts()
+            .pipe(
+                map(fonts => fonts.filter(f => f.enabled)),
+                take(1)
+            )
+            .subscribe(fonts => {
+                fonts.forEach(font => this.injectFont(font));
+            });
+    }
+
+    /** Inject font link into <head> */
+    private injectFont(font: Font): void {
+        if (!font.source || this.injectedFonts.has(font.source)) return;
+
+        const link = this.document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = font.source;
+        link.setAttribute('data-font', font.name);
+
+        this.document.head.appendChild(link);
+        this.injectedFonts.add(font.source);
+    }
+
+
 }

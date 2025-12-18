@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1766033990022,
+  "timestamp": 1766037899028,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -32,7 +32,7 @@
   "dataGroups": [],
   "hashTable": {
     "/icons/imagix-logo.png": "85d42534f7f0ee0609d3804250db867a809f259e",
-    "/index.html": "cc457de4bfa401f4ae2d79ef769a2203a2747aab",
+    "/index.html": "526883c8ed8b801d7e73a31ecc60718f00c3683c",
     "/manifest.webmanifest": "f5d121adfd39ef17a2d7d9cbe260f8115b6c58b4"
   },
   "navigationUrls": [

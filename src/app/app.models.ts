@@ -120,6 +120,7 @@ export interface Font {
     id?: string;
     name: string;
     source: string;
+    enabled: boolean;
     createdAt: number;
     updatedAt?: number;
 }

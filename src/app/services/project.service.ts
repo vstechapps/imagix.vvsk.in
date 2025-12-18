@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { orderBy, where } from '@angular/fire/firestore';
+import { where } from '@angular/fire/firestore';
 import { AuthService } from './auth.service';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { switchMap } from 'rxjs/operators';

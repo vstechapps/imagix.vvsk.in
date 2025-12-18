@@ -1,65 +1,62 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FontsService } from '../services/fonts.service';
 import { Font } from '../app.models';
 
 @Component({
   selector: 'app-fonts',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './fonts.html',
   styleUrl: './fonts.css'
 })
 export class Fonts {
+
   private fontsService = inject(FontsService);
 
-  fonts = signal<Font[]>([]);
-  editingFontId = signal<string | null>(null);
+  fonts$ = this.fontsService.getFonts();
 
-  form = signal({
-    name: '',
-    source: ''
+  fontForm = new FormGroup({
+    name: new FormControl('', { nonNullable: true }),
+    source: new FormControl('', { nonNullable: true }),
+    enabled: new FormControl(false, { nonNullable: true }) // ✅ default ON
   });
 
-  constructor() {
-    this.fontsService.getFonts().subscribe(fonts => {
-      this.fonts.set(fonts);
-    });
-  }
+  editingId: string | null = null;
 
-  saveFont() {
-    const { name, source } = this.form();
-    if (!name || !source) return;
+  save() {
+    if (this.fontForm.invalid) return;
 
-    if (this.editingFontId()) {
-      this.fontsService.updateFont(this.editingFontId()!, {
-        name,
-        source
-      });
+    const data = {
+      ...this.fontForm.value,
+      createdAt: Date.now()
+    } as any;
+
+    if (this.editingId) {
+      this.fontsService.updateFont(this.editingId, data);
     } else {
-      this.fontsService.addFont({ name, source });
+      this.fontsService.createFont(data);
     }
 
-    this.resetForm();
+    this.fontForm.reset({ enabled: true });
+    this.editingId = null;
   }
 
-  editFont(font: Font) {
-    this.editingFontId.set(font.id!);
-    this.form.set({
+  edit(font: Font) {
+    this.editingId = font.id!;
+    this.fontForm.setValue({
       name: font.name,
-      source: font.source
+      source: font.source,
+      enabled: font.enabled
     });
   }
 
-  deleteFont(id: string) {
-    if (confirm('Delete this font?')) {
-      this.fontsService.deleteFont(id);
-    }
+  toggle(font: Font) {
+    this.fontsService.toggleEnabled(font);
   }
 
-  resetForm() {
-    this.form.set({ name: '', source: '' });
-    this.editingFontId.set(null);
+  delete(id: string) {
+    this.fontsService.deleteFont(id);
   }
 }

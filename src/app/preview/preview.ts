@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ProjectService } from '../services/project.service';
 import { Project as ProjectData } from '../app.models';
 import { FormsModule } from '@angular/forms';
+import { FontsService } from '../services/fonts.service';
 
 @Component({
   selector: 'app-preview',
@@ -18,6 +19,7 @@ export class PreviewComponent implements OnInit, OnDestroy {
 
   private route = inject(ActivatedRoute);
   private projectService = inject(ProjectService);
+  private fontsService = inject(FontsService);
 
   projectId = '';
   isLoading = signal(false);
@@ -60,6 +62,9 @@ export class PreviewComponent implements OnInit, OnDestroy {
 
   private async initEtro() {
     if (!this.project || !this.canvasRef) return;
+
+    // Load the fonts first
+    this.fontsService.loadFonts();
 
     try {
       const etroModule: any = await import('etro');

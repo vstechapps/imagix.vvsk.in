@@ -1,36 +1,46 @@
 <div class="fonts-container">
     <h2>Fonts</h2>
 
-    <div class="font-form">
-        <input type="text" placeholder="Font name" [(ngModel)]="form().name" />
+    <form [formGroup]="fontForm" (ngSubmit)="save()" class="font-form">
+        <input placeholder="Font name" formControlName="name" />
+        <input placeholder="Font source URL" formControlName="source" />
 
-        <input type="text" placeholder="Font source URL" [(ngModel)]="form().source" />
+        <label class="toggle">
+            <input type="checkbox" formControlName="enabled" />
+            <span>Enabled</span>
+        </label>
 
-        <div class="actions">
-            <button class="primary" (click)="saveFont()">
-                {{ editingFontId() ? 'Update' : 'Add' }} Font
-            </button>
-            <button class="secondary" *ngIf="editingFontId()" (click)="resetForm()">
-                Cancel
-            </button>
-        </div>
-    </div>
+        <button type="submit" class="primary">
+            {{ editingId ? 'Update' : 'Add' }} Font
+        </button>
+    </form>
 
-    <div class="fonts-list">
-        <div class="font-card" *ngFor="let font of fonts()">
+    <div class="font-list">
+        <div class="font-row" *ngFor="let font of fonts$ | async">
             <div class="info">
-                <strong>{{ font.name }}</strong>
-                <small>{{ font.source }}</small>
+                <div class="font-name">
+                    {{ font.name }}
+                </div>
+
+                <div class="font-source">
+                    {{ font.source }}
+                </div>
             </div>
 
-            <div class="card-actions">
-                <button (click)="editFont(font)">Edit</button>
-                <button class="danger" (click)="deleteFont(font.id!)">Delete</button>
-            </div>
-        </div>
+            <label class="switch">
+                <input type="checkbox" [checked]="font.enabled" (change)="toggle(font)" />
+                <span class="slider"></span>
+            </label>
 
-        <div class="empty" *ngIf="fonts().length === 0">
-            No fonts added yet
+            <div class="actions">
+                <button class="icon-btn edit" title="Edit font" (click)="edit(font)">
+                    ✏️
+                </button>
+
+                <button class="icon-btn delete" title="Delete font" (click)="delete(font.id!)">
+                    🗑️
+                </button>
+            </div>
         </div>
     </div>
 </div>
