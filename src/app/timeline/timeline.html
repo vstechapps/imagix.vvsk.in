@@ -8,8 +8,9 @@
                 {{ layer.name }}
             </div>
             <div class="layer-content">
-                <!-- Visual representation of clips would go here -->
-                <div class="clip" [style.width.%]="100"></div>
+                <div class="clip" [ngStyle]="getClipStyle(layer)">
+                    <span class="clip-label">{{ layer.type }}</span>
+                </div>
             </div>
         </div>
         <div class="drop-zone" *ngIf="isDragging">

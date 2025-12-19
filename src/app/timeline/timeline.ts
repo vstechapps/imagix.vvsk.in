@@ -11,7 +11,19 @@ import { Media } from '../app.models';
 })
 export class TimelineComponent {
   @Input() layers: any[] = [];
+  @Input() projectDuration: number = 0;
   @Output() mediaDrop = new EventEmitter<Media>();
+
+  getClipStyle(layer: any) {
+    if (!this.projectDuration) return { width: '0%' };
+    const width = (layer.duration / this.projectDuration) * 100;
+    const left = (layer.startTime / this.projectDuration) * 100;
+    return {
+      width: `${width}%`,
+      left: `${left}%`,
+      position: 'absolute'
+    };
+  }
 
   isDragging = false;
 

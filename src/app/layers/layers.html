@@ -5,12 +5,19 @@
     </div>
 
     <div class="layers-list">
-        <div class="layer-item" *ngFor="let layer of layers()">
+        <div class="layer-item" *ngFor="let layer of layers(); let i = index">
             <div class="layer-info">
                 <span class="layer-name">{{ layer.name }}</span>
                 <span class="layer-type-badge">{{ layer.type }}</span>
             </div>
             <div class="layer-actions">
+                <button class="icon-btn move-btn" (click)="moveLayerUp(i)" [disabled]="i === 0" title="Move Up">
+                    ↑
+                </button>
+                <button class="icon-btn move-btn" (click)="moveLayerDown(i)" [disabled]="i === layers().length - 1"
+                    title="Move Down">
+                    ↓
+                </button>
                 <button class="icon-btn edit-btn" (click)="openEditLayerDialog(layer)" title="Edit Layer">
                     ✎
                 </button>
@@ -23,6 +30,12 @@
         <div class="empty-state" *ngIf="layers().length === 0">
             <p>No layers added yet.</p>
         </div>
+    </div>
+
+    <div class="timeline-section" *ngIf="project()">
+        <app-timeline [layers]="layers()" [projectDuration]="project()?.duration || 0"
+            (mediaDrop)="onMediaDrop($event)">
+        </app-timeline>
     </div>
 </div>
 

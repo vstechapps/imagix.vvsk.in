@@ -2,6 +2,18 @@
     padding: 24px;
     height: 100%;
     color: #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.timeline-section {
+    margin-top: auto;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #111827;
+    border: 1px solid #374151;
+    min-height: 200px;
 }
 
 .header {
@@ -82,6 +94,12 @@
 .icon-btn:hover {
     color: white;
     background-color: #374151;
+}
+
+.icon-btn:disabled {
+    color: #374151;
+    cursor: not-allowed;
+    background: none;
 }
 
 .delete-btn:hover {

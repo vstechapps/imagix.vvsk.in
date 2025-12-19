@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectService } from '../services/project.service';
 import { Project, Layer, Visual, Text, Image, Audio, Video } from '../app.models';
+import { TimelineComponent } from '../timeline/timeline';
 
 @Component({
   selector: 'app-layers',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TimelineComponent],
   templateUrl: './layers.html',
   styleUrl: './layers.css',
 })
@@ -76,6 +77,7 @@ export class LayersComponent implements OnInit {
       id,
       startTime: 0,
       duration: 5,
+      enabled: true,
     };
 
     if (type === 'Visual') {
@@ -172,6 +174,21 @@ export class LayersComponent implements OnInit {
     await this.saveLayers(updatedLayers);
   }
 
+  async moveLayerUp(index: number) {
+    if (index === 0) return;
+    const updatedLayers = [...this.layers()];
+    [updatedLayers[index - 1], updatedLayers[index]] = [updatedLayers[index], updatedLayers[index - 1]];
+    await this.saveLayers(updatedLayers);
+  }
+
+  async moveLayerDown(index: number) {
+    const currentLayers = this.layers();
+    if (index === currentLayers.length - 1) return;
+    const updatedLayers = [...currentLayers];
+    [updatedLayers[index], updatedLayers[index + 1]] = [updatedLayers[index + 1], updatedLayers[index]];
+    await this.saveLayers(updatedLayers);
+  }
+
   async saveLayers(updatedLayers: Layer[]) {
     this.layers.set(updatedLayers);
 
@@ -183,5 +200,10 @@ export class LayersComponent implements OnInit {
         layers: updatedLayers
       });
     }
+  }
+
+  onMediaDrop(media: any) {
+    console.log('Media dropped on timeline:', media);
+    // Future implementation: Add media to a new layer
   }
 }
